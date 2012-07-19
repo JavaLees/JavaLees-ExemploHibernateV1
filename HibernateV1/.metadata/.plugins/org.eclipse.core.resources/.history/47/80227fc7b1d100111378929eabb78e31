@@ -1,0 +1,5 @@
+package javalees.model.dao;
+
+public class PessoaDAO {
+
+}

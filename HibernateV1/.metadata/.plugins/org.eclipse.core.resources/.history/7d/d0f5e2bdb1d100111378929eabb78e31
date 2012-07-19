@@ -1,0 +1,5 @@
+package javalees.model;
+
+public class Pessoa {
+
+}

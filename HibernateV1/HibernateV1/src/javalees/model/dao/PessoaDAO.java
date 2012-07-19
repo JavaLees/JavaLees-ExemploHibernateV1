@@ -1,0 +1,67 @@
+package javalees.model.dao;
+
+import java.util.List;
+
+import javalees.hibernate.HibernateUtil;
+import javalees.model.Pessoa;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.Transaction;
+
+/**
+ * @author Paulo Luan
+ * 
+ *         http://javafxbr.com/blog
+ * 
+ *         Esta classe Permite encapsular a parte de persistência com o Banco de
+ *         Dados. o nome DAO refere-se a Data Access Object, um padrão de
+ *         projetos que utiliza esta metodologia.
+ * 
+ * 
+ *         "DAO (acrônimo de Data Access Object), é um padrão para persistência
+ *         de dados que permite separar regras de negócio das regras de acesso a
+ *         banco de dados. Numa aplicação que utilize a arquitetura MVC, todas
+ *         as funcionalidades de bancos de dados, tais como obter as conexões,
+ *         mapear objetos Java para tipos de dados SQL ou executar comandos SQL,
+ *         devem ser feitas por classes de DAO." [Wikipedia]
+ *         (http://pt.wikipedia.org/wiki/Data_Access_Object)
+ */
+public class PessoaDAO {
+
+	private SessionFactory sessionFactory = HibernateUtil.getSessionFactory();
+
+	public void SalvarPessoa(Pessoa pessoa) {
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		session.save(pessoa);
+		tx.commit();
+		session.close();
+	}
+
+	public void DeletarPessoa(Pessoa func) {
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		session.delete(func);
+		tx.commit();
+		session.close();
+	}
+
+	public void AlterarPessoa(Pessoa func) {
+		Session session = sessionFactory.openSession();
+		Transaction tx = session.beginTransaction();
+		session.update(func);
+		tx.commit();
+		session.close();
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<Pessoa> getPessoas() {
+		List<Pessoa> pessoas;
+		Session session = sessionFactory.openSession();
+		pessoas = session.createQuery("FROM Pessoa").list();
+		session.close();
+		return pessoas;
+	}
+
+}

@@ -1,0 +1,79 @@
+package javalees.model.dao;
+
+import java.util.List;
+
+import org.hibernate.Session;
+import org.hibernate.Transaction;
+
+import br.com.hibernate.HibernateUtil;
+import br.com.pessoa.Pessoa;
+
+/**
+ * @author Paulo Luan
+ * 
+ *         http://javafxbr.com/blog
+ * 
+ *         Esta classe Permite encapsular a parte de persistência com o Banco de
+ *         Dados. o nome DAO refere-se a Data Access Object, um padrão de
+ *         projetos que utiliza esta metodologia.
+ * 
+ * 
+ *         "DAO (acrônimo de Data Access Object), é um padrão para persistência
+ *         de dados que permite separar regras de negócio das regras de acesso a
+ *         banco de dados. Numa aplicação que utilize a arquitetura MVC, todas
+ *         as funcionalidades de bancos de dados, tais como obter as conexões,
+ *         mapear objetos Java para tipos de dados SQL ou executar comandos SQL,
+ *         devem ser feitas por classes de DAO." [Wikipedia]
+ *         (http://pt.wikipedia.org/wiki/Data_Access_Object)
+ */
+public class PessoaDAO {
+
+	private Session session = new HibernateUtil().getSessionFactory()
+			.openSession();
+
+	public void SalvarPessoa(Pessoa pessoa) {
+		Transaction tx = session.beginTransaction();
+		session.save(pessoa);
+		tx.commit();
+		fecharSessao();
+	}
+
+	public void DeletarPessoa(int id) {
+		abrirSessao();
+		Pessoa Pessoa = (Pessoa) session.load(Pessoa.class, id);
+		Transaction tx = session.beginTransaction();
+		session.delete(Pessoa);
+		tx.commit();
+		fecharSessao();
+	}
+
+	public void AlterarPessoa(int id, String nome, Integer idade) {
+		abrirSessao();
+		Pessoa Pessoa = (Pessoa) session.load(Pessoa.class, id);
+		Transaction tx = session.beginTransaction();
+		Pessoa.setNome(nome);
+		Pessoa.setIdade(idade);
+		session.update(Pessoa);
+		tx.commit();
+		fecharSessao();
+	}
+
+	public List getPessoas() {
+		abrirSessao();
+		return session.createQuery("Select p from Pessoa p").list();
+	}
+
+	/*
+	 * Para cada Transação no Banco de Dados é necessário abrir uma sessão de
+	 * comunicação.
+	 */
+	public void abrirSessao() {
+		session = new HibernateUtil().getSessionFactory().openSession();
+	}
+
+	/* da mesma forma que se faz ne */
+	public void fecharSessao() {
+		session.close();
+	}
+
+}

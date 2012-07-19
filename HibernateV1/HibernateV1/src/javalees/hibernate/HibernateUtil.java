@@ -1,0 +1,38 @@
+package javalees.hibernate;
+
+import org.hibernate.Session;
+import org.hibernate.SessionFactory;
+import org.hibernate.cfg.AnnotationConfiguration;
+import org.hibernate.tool.hbm2ddl.SchemaExport;
+
+@SuppressWarnings("deprecation")
+public class HibernateUtil {
+
+	private static final SessionFactory sessionFactory;
+	static {
+		sessionFactory = new AnnotationConfiguration().configure()
+				.buildSessionFactory();
+	}
+
+	public static SessionFactory getSessionFactory() {
+		return sessionFactory;
+	}
+
+	public void criaTabelaNoBD() {
+		try {
+			Session session = sessionFactory.openSession();
+
+			AnnotationConfiguration cfg = new AnnotationConfiguration();
+			cfg.configure();
+			SchemaExport schema = new SchemaExport(cfg);
+			schema.create(true, true);
+
+			session.beginTransaction().commit();
+			session.close();
+
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
+}
